@@ -16,8 +16,8 @@
   
   <entry>
     <title><![CDATA[Redisで任意のファイルをアップロードする攻撃]]></title>
-    <link href="https://csirt.mrtc0.com/2016/03/07/cilickxge000ci2cme9cxvqyk/"/>
-    <id>https://csirt.mrtc0.com/2016/03/07/cilickxge000ci2cme9cxvqyk/</id>
+    <link href="https://csirt.mrtc0.com/2016/03/07/"/>
+    <id>https://csirt.mrtc0.com/2016/03/07/</id>
     <published>2016-03-07T11:41:31.000Z</published>
     <updated>2016-03-07T19:02:18.436Z</updated>
     <content type="html"><![CDATA[<p>年末年始からRedisを狙った攻撃が増加しているようです.  </p>
@@ -55,8 +55,8 @@
   
   <entry>
     <title><![CDATA[2015年のハニーポット記録(セキュリティ・キャンプ アワード2016)]]></title>
-    <link href="https://csirt.mrtc0.com/2016/03/05/cilickxg90005i2cmfnatlivy/"/>
-    <id>https://csirt.mrtc0.com/2016/03/05/cilickxg90005i2cmfnatlivy/</id>
+    <link href="https://csirt.mrtc0.com/2016/03/05/"/>
+    <id>https://csirt.mrtc0.com/2016/03/05/</id>
     <published>2016-03-05T14:00:49.000Z</published>
     <updated>2016-03-11T03:58:33.652Z</updated>
     <content type="html"><![CDATA[<p>2015年の1年間のハニーポットの記録です.<br>また, セキュリティ・キャンプ フォーラム2016で行われたセキュリティ・キャンプ アワード2016の発表内容です.  </p>
@@ -194,8 +194,8 @@
   
   <entry>
     <title><![CDATA[.htaccessで悪質なサイトへ誘導する手法]]></title>
-    <link href="https://csirt.mrtc0.com/2016/01/21/cilickxfo0000i2cm6oyj21rd/"/>
-    <id>https://csirt.mrtc0.com/2016/01/21/cilickxfo0000i2cm6oyj21rd/</id>
+    <link href="https://csirt.mrtc0.com/2016/01/21/"/>
+    <id>https://csirt.mrtc0.com/2016/01/21/</id>
     <published>2016-01-21T14:45:06.000Z</published>
     <updated>2016-01-21T16:48:38.400Z</updated>
     <content type="html"><![CDATA[<p>Dionaeaにて.htaccessを使ってマルウェア配布サイトへ誘導する手法を観測しました.  </p>
